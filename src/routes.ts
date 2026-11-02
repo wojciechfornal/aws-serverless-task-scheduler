@@ -14,7 +14,7 @@ const healthApiOpts = {
 export async function routes(fastify: FastifyInstance) {
 
     fastify.get('/health', healthApiOpts, (_req, res) => {
-        res.status(200).send({ status: 'ok' });
+        res.status(200).send({ status: 'OK' });
     });
 
 }
