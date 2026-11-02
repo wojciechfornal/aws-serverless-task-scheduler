@@ -41,6 +41,7 @@
 
     "allowImportingTsExtensions": true,
     "rewriteRelativeImportExtensions": true,
+    "customConditions": ["development"]
 
   },
   "include": ["src/**/*.ts"]

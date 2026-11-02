@@ -1,4 +1,4 @@
-import { buildApp } from './app.ts';
+import { buildApp } from '#app';
 
 export const start = async () => {
 
