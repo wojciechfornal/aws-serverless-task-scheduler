@@ -25,3 +25,18 @@ Keep-Alive: timeout=72
 
 {"status":"ok"}
 ```
+
+### tasks
+
+```shell
+curl --header "Content-Type: application/json" \
+--request POST \
+--data '{"title":"New task title","description":"", "remindAt": "2026-11-10T18:00:00.000Z"}' \
+http://localhost:3000/task
+```
+
+Expected output
+
+```text
+{"id":"01a19ff2-62b5-7b6b-abec-6896cff55172","title":"New task title","remindAt":"2026-11-10T18:00:00.000Z","completed":false,"description":""}
+```
