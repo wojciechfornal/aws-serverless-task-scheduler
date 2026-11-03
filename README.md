@@ -54,7 +54,7 @@ Keep-Alive: timeout=72
 curl --header "Content-Type: application/json" \
 --request POST \
 --data '{"title":"New task title","description":"", "remindAt": "2026-11-10T18:00:00.000Z"}' \
-http://localhost:3000/task
+http://localhost:3000/tasks
 ```
 
 Expected output

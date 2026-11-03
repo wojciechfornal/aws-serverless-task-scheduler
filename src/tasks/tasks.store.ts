@@ -1,17 +1,17 @@
 import crypto from 'node:crypto';
-import type { CreateTaskInput, Task } from './task.ts';
+import { createTask, type CreateTaskInput, type Task } from './task.ts';
 
 const TasksStore = new Map<String, Task>();
 
 export function storeTask(task: CreateTaskInput): Task {
 
-    const newTask = {
+    const remindAt = new Date(task.remindAt).toISOString();
+
+    const newTask = createTask({
         title: task.title,
-        description: task.description?.trim() ?? '',
-        remindAt: task.remindAt,
-        id: crypto.randomUUIDv7(),
-        completed: false,
-    }
+        remindAt,
+        ...(task.description ? { description: task.description } : {} )
+    });
 
     TasksStore.set(newTask.id, newTask);
 
