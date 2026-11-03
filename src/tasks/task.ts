@@ -1,10 +1,10 @@
 import { type Static, Type } from "@sinclair/typebox";
 
 export const TaskSchema = Type.Object({
-    id: Type.Required(Type.String()),
-    title: Type.Required(Type.String()),
+    id: Type.Required(Type.String({minLength: 1})),
+    title: Type.Required(Type.String({minLength: 1})),
     description: Type.Optional(Type.String()),
-    remindAt: Type.Required(Type.String()),
+    remindAt: Type.Required(Type.String({format: 'date-time'})),
     completed: Type.Required(Type.Boolean()),
 });
 
