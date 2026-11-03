@@ -36,6 +36,7 @@ export async function tasksRoutes(fastify: FastifyInstance) {
           },
         ],
       });
+      return;
     }
 
     const reminderTime = Date.parse(req.body.remindAt);
@@ -53,6 +54,7 @@ export async function tasksRoutes(fastify: FastifyInstance) {
           },
         ],
       });
+      return;
     }
 
     if (reminderTime <= Date.now()) {
@@ -68,9 +70,11 @@ export async function tasksRoutes(fastify: FastifyInstance) {
           },
         ],
       });
+      return;
     }
 
     const task: Task = storeTask(req.body);
     res.status(201).send(task);
+
   });
 }
