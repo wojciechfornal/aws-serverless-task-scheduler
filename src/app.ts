@@ -5,7 +5,15 @@ import { tasksRoutes } from './tasks/task-routes.ts';
 
 export function buildApp(options: Fastify.FastifyServerOptions = {}): Fastify.FastifyInstance {
 
-    const app = Fastify(options);
+    const app = Fastify({
+        ...options,
+        ajv: {
+            ...options.ajv,
+            customOptions: {
+                removeAdditional: false
+            }
+        }
+    });
 
     app.register(routes);
     app.register(tasksRoutes);
