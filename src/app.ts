@@ -1,5 +1,6 @@
 import Fastify from 'fastify';
 
+import { errorHandler } from './http/error-handler.ts';
 import { routes } from './routes.ts';
 import { tasksRoutes } from './tasks/task-routes.ts';
 
@@ -15,6 +16,7 @@ export function buildApp(options: Fastify.FastifyServerOptions = {}): Fastify.Fa
         }
     });
 
+    app.setErrorHandler(errorHandler);
     app.register(routes);
     app.register(tasksRoutes);
 

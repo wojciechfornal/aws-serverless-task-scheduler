@@ -7,12 +7,14 @@ import {
   type Task,
 } from "./task.ts";
 import { storeTask } from "./tasks.store.ts";
+import { ErrorResponseSchema } from "#http/error-response";
 
 const taskPostOpts = {
   schema: {
     body: CreateTaskInputSchema,
     response: {
       201: TaskSchema,
+      400: ErrorResponseSchema,
     },
   },
 };
