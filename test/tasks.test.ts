@@ -3,10 +3,13 @@ import { describe, test } from "node:test";
 import { buildApp } from '#app';
 import { type CreateTaskInput, type Task } from '#/tasks/task';
 
+const USE_LOGGER = true;
+
 describe('tasks API', () => {
 
-    test('A valid request returns 201, a generated ID, and completed: false', async () => {
-        const app = buildApp({ logger: false });
+    test('A valid request returns 201, a generated ID, and completed: false', async (t) => {
+        const app = buildApp({ logger: USE_LOGGER });
+        t.after(() => app.close());
         const now = Date.now();
         const then = now + 1000 * 60 * 60 * 24 * 2;
         const remindAt = new Date(then).toISOString();
@@ -26,9 +29,10 @@ describe('tasks API', () => {
 
     });
 
-    test('A title containing only whitespace returns 400.', async () => {
+    test('A title containing only whitespace returns 400.', async (t) => {
 
-        const app = buildApp({ logger: false });
+        const app = buildApp({ logger: USE_LOGGER });
+        t.after(() => app.close());
         const now = Date.now();
         const then = now + 1000 * 60 * 60 * 24 * 2;
         const remindAt = new Date(then).toISOString();
@@ -46,9 +50,10 @@ describe('tasks API', () => {
 
     });
 
-    test('An invalid remindAt returns 400.', async () => {
+    test('An invalid remindAt returns 400.', async (t) => {
 
-        const app = buildApp({ logger: false });
+        const app = buildApp({ logger: USE_LOGGER });
+        t.after(() => app.close());
         const remindAt = '05/11/2026, 20:55:23';
         const task: CreateTaskInput = {
             title: 'Some title',
@@ -64,9 +69,10 @@ describe('tasks API', () => {
 
     });
 
-    test('A valid timestamp in the past returns 400.', async () => {
+    test('A valid timestamp in the past returns 400.', async (t) => {
 
-        const app = buildApp({ logger: false });
+        const app = buildApp({ logger: USE_LOGGER });
+        t.after(() => app.close());
         const remindAt = '1979-01-01T00:00:00.000Z';
         const task: CreateTaskInput = {
             title: 'Some title',
@@ -83,9 +89,10 @@ describe('tasks API', () => {
 
     });
 
-    test('A request containing id returns 400.', async () => {
+    test('A request containing id returns 400.', async (t) => {
 
-        const app = buildApp({ logger: false });
+        const app = buildApp({ logger: USE_LOGGER });
+        t.after(() => app.close());
         const now = Date.now();
         const then = now + 1000 * 60 * 60 * 24 * 2;
         const remindAt = new Date(then).toISOString();
@@ -104,9 +111,10 @@ describe('tasks API', () => {
 
     });
 
-    test('A request containing completed returns 400.', async () => {
+    test('A request containing completed returns 400.', async (t) => {
 
-        const app = buildApp({ logger: false });
+        const app = buildApp({ logger: USE_LOGGER });
+        t.after(() => app.close());
         const now = Date.now();
         const then = now + 1000 * 60 * 60 * 24 * 2;
         const remindAt = new Date(then).toISOString();
@@ -125,8 +133,9 @@ describe('tasks API', () => {
 
     });
 
-    test('A timestamp with an offset is returned in UTC.', async () => {
-        const app = buildApp({ logger: false });
+    test('A timestamp with an offset is returned in UTC.', async (t) => {
+        const app = buildApp({ logger: USE_LOGGER });
+        t.after(() => app.close());
         const future = new Date(Date.now() + 1000 * 60 * 60 * 24 * 2);
         const remindAt = future.toISOString().replace('Z', '+02:00');
         const task: CreateTaskInput = {
