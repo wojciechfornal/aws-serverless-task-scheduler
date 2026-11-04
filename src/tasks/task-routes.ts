@@ -19,6 +19,7 @@ const taskPostOpts = {
 
 // TODO Consider following Problem Details (RFC 9457) but it seems a bit too verbose for me as of now
 // TODO What about doubled validation (schema and check in route handler)?
+// TODO Move error codes to separate resource (collection) where error definitions will be stored with associated metadata
 export async function tasksRoutes(fastify: FastifyInstance) {
   fastify.post<{ Body: CreateTaskInput }>("/tasks", taskPostOpts, (req, res) => {
     const title = req.body.title.trim();

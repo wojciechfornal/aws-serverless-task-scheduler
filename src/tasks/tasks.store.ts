@@ -20,7 +20,5 @@ export function storeTask(task: CreateTaskInput): Task {
 }
 
 export function getTaskById(taskId: string): Task | undefined {
-    if (TasksStore.has(taskId)) {
-        return TasksStore.get(taskId);
-    }
+    return TasksStore.get(taskId);
 }

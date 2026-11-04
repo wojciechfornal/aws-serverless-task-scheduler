@@ -64,10 +64,10 @@ describe('tasks API', () => {
 
     });
 
-    test('An past remindAt returns 400.', async () => {
+    test('A valid timestamp in the past returns 400.', async () => {
 
         const app = buildApp({ logger: false });
-        const remindAt = '01/01/1979, 00:00:00';
+        const remindAt = '1979-01-01T00:00:00.000Z';
         const task: CreateTaskInput = {
             title: 'Some title',
             remindAt
@@ -79,14 +79,17 @@ describe('tasks API', () => {
         });
 
         assert.equal(response.statusCode, 400);
+        assert.equal(response.json().errors[0].code, 'TASK_REMINDER_MUST_BE_FUTURE');
 
     });
 
     test('A request containing id returns 400.', async () => {
 
         const app = buildApp({ logger: false });
-        const remindAt = '01/01/1979, 00:00:00';
-        const task: CreateTaskInput = {
+        const now = Date.now();
+        const then = now + 1000 * 60 * 60 * 24 * 2;
+        const remindAt = new Date(then).toISOString();
+        const task = {
             id: 'f502449b-9416-4108-953d-92b9e9947f91',
             title: 'Some title',
             remindAt
@@ -104,8 +107,10 @@ describe('tasks API', () => {
     test('A request containing completed returns 400.', async () => {
 
         const app = buildApp({ logger: false });
-        const remindAt = '01/01/1979, 00:00:00';
-        const task: CreateTaskInput = {
+        const now = Date.now();
+        const then = now + 1000 * 60 * 60 * 24 * 2;
+        const remindAt = new Date(then).toISOString();
+        const task = {
             title: 'Some title',
             remindAt,
             completed: true,
