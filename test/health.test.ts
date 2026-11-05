@@ -3,8 +3,9 @@ import assert from "node:assert/strict";
 import { buildApp } from "#app";
 
 describe("health API", () => {
-  test("GET /health returns 200 and ok status", async () => {
+  test("GET /health returns 200 and ok status", async (t) => {
     const app = buildApp();
+    t.after(() => app.close());
     const response = await app.inject({
       method: "GET",
       url: "/health",
