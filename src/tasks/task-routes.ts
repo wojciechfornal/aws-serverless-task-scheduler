@@ -34,7 +34,7 @@ export async function tasksRoutes(fastify: FastifyInstance) {
         errors: [
           {
             field: "title",
-            code: "TASK_TITLE_REQUIRED",
+            code: "FIELD_REQUIRED",
             message: "Enter a task title.",
           },
         ],
@@ -52,7 +52,7 @@ export async function tasksRoutes(fastify: FastifyInstance) {
         errors: [
           {
             field: "remindAt",
-            code: "TASK_REMINDER_MUST_BE_VALID_DATE_TIME_STRING",
+            code: "FIELD_INVALID_TYPE",
             message: "Task reminder must be valid date-time string.",
           },
         ],
@@ -68,7 +68,7 @@ export async function tasksRoutes(fastify: FastifyInstance) {
         errors: [
           {
             field: "remindAt",
-            code: "TASK_REMINDER_MUST_BE_FUTURE",
+            code: "FIELD_INVALID_TYPE",
             message: "Choose a future reminder time.",
           },
         ],
