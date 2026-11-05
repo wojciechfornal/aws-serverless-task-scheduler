@@ -1,4 +1,7 @@
-import Fastify, { type FastifySchemaValidationError } from "fastify";
+import Fastify, {
+  type FastifyError,
+  type FastifySchemaValidationError,
+} from "fastify";
 
 import { type Error, type ErrorResponse } from "./error-response.ts";
 
@@ -79,11 +82,29 @@ export function mapValidationsToErrors(
  */
 export function errorHandler(
   this: Fastify.FastifyInstance,
-  error: ValidationError,
+  error: FastifyError,
   request: Fastify.FastifyRequest,
   reply: Fastify.FastifyReply,
 ) {
   this.log.error(error);
+
+  if (error.code === 'FST_ERR_CTP_INVALID_JSON_BODY') {
+
+    const response: ErrorResponse = {
+        requestId: request.id,
+        status: 400,
+        title: 'Invalid JSON',
+        errors: [
+            {
+                code: 'INVALID_JSON',
+                message: 'Request body must contain valid JSON.',
+            }
+        ]
+    }
+
+    return reply.status(400).send(response);
+
+  }
 
   if (!error.validation) {
     return reply.send(error);
