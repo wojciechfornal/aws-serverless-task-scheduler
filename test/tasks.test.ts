@@ -3,7 +3,7 @@ import { describe, test } from "node:test";
 import { buildApp } from '#app';
 import { type CreateTaskInput, type Task } from '#/tasks/task';
 
-const USE_LOGGER = true;
+const USE_LOGGER = false;
 
 describe('tasks API', () => {
 
@@ -85,11 +85,11 @@ describe('tasks API', () => {
         });
 
         assert.equal(response.statusCode, 400);
-        assert.equal(response.json().errors[0].code, 'TASK_REMINDER_MUST_BE_FUTURE');
+        assert.equal(response.json().errors[0].code, 'FIELD_INVALID_TYPE');
 
     });
 
-    test('A request containing id returns 400.', async (t) => {
+    test('A request containing id returns 400, valid field and coe.', async (t) => {
 
         const app = buildApp({ logger: USE_LOGGER });
         t.after(() => app.close());
@@ -108,10 +108,12 @@ describe('tasks API', () => {
         });
 
         assert.equal(response.statusCode, 400);
+        assert.equal(response.json().errors[0].field, 'id');
+        assert.equal(response.json().errors[0].code, 'FIELD_NOT_ALLOWED');
 
     });
 
-    test('A request containing completed returns 400.', async (t) => {
+    test('A request containing completed returns 400, valid field and code.', async (t) => {
 
         const app = buildApp({ logger: USE_LOGGER });
         t.after(() => app.close());
@@ -130,6 +132,8 @@ describe('tasks API', () => {
         });
 
         assert.equal(response.statusCode, 400);
+        assert.equal(response.json().errors[0].field, 'completed');
+        assert.equal(response.json().errors[0].code, 'FIELD_NOT_ALLOWED');
 
     });
 
@@ -152,6 +156,45 @@ describe('tasks API', () => {
         assert.equal(response.json().remindAt, new Date(remindAt).toISOString());
     });
 
+    test('Schema failure response body contains valid field and code', async (t) => {
 
+        const app = buildApp({ logger: USE_LOGGER });
+        t.after(() => app.close());
+        const task = {
+            title: 'Some title'
+        }
+        const response = await app.inject({
+            method: 'POST',
+            url: '/tasks',
+            body: task
+        });
+        
+        assert.equal(response.statusCode, 400);
+        assert.equal(response.json().errors[0].code, 'FIELD_REQUIRED');
+        
+    });
+
+    test('Route validation failure response body contains valid field and code', async (t) => {
+
+        const app = buildApp({ logger: USE_LOGGER });
+        t.after(() => app.close());
+        const now = Date.now();
+        const then = now + 1000 * 60 * 60 * 24 * 2;
+        const remindAt = new Date(then).toISOString();
+        const task = {
+            title: ' ',
+            remindAt
+        }
+        const response = await app.inject({
+            method: 'POST',
+            url: '/tasks',
+            body: task
+        });
+
+        assert.equal(response.statusCode, 400);
+        assert.equal(response.json().errors[0].field, 'title');
+        assert.equal(response.json().errors[0].code, 'FIELD_REQUIRED');
+        
+    });
 
 });
