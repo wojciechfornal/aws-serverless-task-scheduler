@@ -26,3 +26,5 @@ This is still a work in progress...
 ## Main skills practiced in the project
 
 API, Lambda, DynamoDB, Terraform
+
+See [Wiki](https://github.com/wojciechfornal/aws-serverless-task-scheduler/wiki) for more.
