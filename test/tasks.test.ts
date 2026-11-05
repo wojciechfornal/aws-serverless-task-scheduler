@@ -202,4 +202,51 @@ describe("tasks API", () => {
     assert.equal(typeof createdTask.id, "string");
     assert.ok(createdTask.id.length > 0);
   });
+
+  test('Added task can be retrieved by id', async (t) => {
+
+    const app = buildApp({ logger: USE_LOGGER });
+    t.after(() => app.close());
+
+    const task: CreateTaskInput = {
+      title: "New task title",
+      remindAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+    };
+    const response = await app.inject({
+      method: "POST",
+      url: "/tasks",
+      body: task,
+    });
+
+    assert.equal(response.statusCode, 201);
+    assert.equal(response.json().id.length, 36);
+    assert.equal(response.json().completed, false);
+
+    const taskId = response.json().id;
+
+    const retrieveTaskResponse = await app.inject({
+      method: 'GET',
+      url: `/tasks/${taskId}`,
+    });
+
+    assert.equal(retrieveTaskResponse.statusCode, 200);
+    assert.equal(retrieveTaskResponse.json().id, taskId);
+
+  });
+
+  test('Retrieval of non-existing task returns 404 and TASK_NOT_FOUND code', async (t) => {
+
+    const app = buildApp({ logger: USE_LOGGER });
+    t.after(() => app.close());
+
+    const response = await app.inject({
+      method: 'GET',
+      url: `/tasks/no-such-id`,
+    });
+
+    assert.equal(response.statusCode, 404);
+    assert.equal(response.json().errors[0].code, 'TASK_NOT_FOUND');
+
+  });
+
 });
