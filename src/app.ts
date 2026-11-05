@@ -4,7 +4,9 @@ import { errorHandler } from './http/error-handler.ts';
 import { routes } from './routes.ts';
 import { tasksRoutes } from './tasks/task-routes.ts';
 
-export function buildApp(options: Fastify.FastifyServerOptions = {}): Fastify.FastifyInstance {
+import { type TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
+
+export function buildApp(options: Fastify.FastifyServerOptions = {}) {
 
     const app = Fastify({
         ...options,
@@ -14,7 +16,7 @@ export function buildApp(options: Fastify.FastifyServerOptions = {}): Fastify.Fa
                 removeAdditional: false
             }
         }
-    });
+    }).withTypeProvider<TypeBoxTypeProvider>();
 
     app.setErrorHandler(errorHandler);
     app.register(routes);
