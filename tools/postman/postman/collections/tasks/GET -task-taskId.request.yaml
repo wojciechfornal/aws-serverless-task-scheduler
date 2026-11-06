@@ -1,0 +1,7 @@
+$kind: http-request
+name: GET /task/:taskId
+url: "{{host}}:{{port}}/tasks/:taskId"
+method: GET
+pathVariables:
+  taskId: "123"
+order: 1000

@@ -1,0 +1,6 @@
+name: local
+values:
+  - key: host
+    value: ''
+  - key: port
+    value: ''
