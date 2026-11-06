@@ -18,7 +18,10 @@ export const CreateTaskInputSchema = Type.Pick(TaskSchema, Type.Union([
     Type.Literal('remindAt'),
 ]));
 
+export const TasksCollectionSchema = Type.Array(TaskSchema);
+
 export type Task = Static<typeof TaskSchema>;
+export type TasksCollection = Static<typeof TasksCollectionSchema>;
 export type CreateTaskInput = Static<typeof CreateTaskInputSchema>;
 
 /**

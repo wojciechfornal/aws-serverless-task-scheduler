@@ -19,6 +19,10 @@ export function storeTask(task: CreateTaskInput): Task {
 
 }
 
+export function getAllTasks(): Task[] {
+    return Array.from(TasksStore.values());
+}
+
 export function getTaskById(taskId: string): Task | undefined {
     return TasksStore.get(taskId);
 }

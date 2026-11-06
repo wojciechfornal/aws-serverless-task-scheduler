@@ -3,10 +3,12 @@ import { type FastifyInstance } from "fastify";
 import {
   CreateTaskInputSchema,
   TaskSchema,
+  TasksCollectionSchema,
   type CreateTaskInput,
   type Task,
+  type TasksCollection,
 } from "./task.ts";
-import { getTaskById, storeTask } from "./tasks.store.ts";
+import { getAllTasks, getTaskById, storeTask } from "./tasks.store.ts";
 import { ErrorResponseSchema } from "#http/error-response";
 import { type Static, Type } from "@sinclair/typebox";
 import { type FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
@@ -16,7 +18,7 @@ import { type FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 const tasksGetSchema = {
   schema: {
     response: {
-      200: TaskSchema,
+      200: TasksCollectionSchema,
       404: ErrorResponseSchema,
     },
   },
@@ -51,6 +53,12 @@ const tasksPostOptions = {
 // TODO Move error codes to separate resource (collection) where error definitions will be stored with associated metadata
 export const tasksRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
   // TODO The GET /tasks route
+
+  fastify.get('/tasks', tasksGetSchema, (req, res) => {
+
+    res.status(200).send(getAllTasks());
+
+  });
 
   // The GET /tasks/:taskId route
 
