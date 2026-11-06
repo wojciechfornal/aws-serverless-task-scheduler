@@ -1,12 +1,15 @@
-import Fastify from 'fastify';
+import Fastify, { type FastifyServerOptions } from 'fastify';
+
+import { type TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 
 import { errorHandler } from './http/error-handler.ts';
 import { routes } from './routes.ts';
 import { tasksRoutes } from './tasks/task-routes.ts';
+import { type TasksStore } from './tasks/tasks.store.ts';
 
-import { type TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
+export type AppOptions = FastifyServerOptions & { store: TasksStore };
 
-export function buildApp(options: Fastify.FastifyServerOptions = {}) {
+export function buildApp({ store, ...options }: AppOptions) {
 
     const app = Fastify({
         ...options,
@@ -20,7 +23,7 @@ export function buildApp(options: Fastify.FastifyServerOptions = {}) {
 
     app.setErrorHandler(errorHandler);
     app.register(routes);
-    app.register(tasksRoutes);
+    app.register(tasksRoutes, { store });
 
     return app;
 

@@ -1,8 +1,12 @@
 import { buildApp } from '#app';
 
+import { createStore, type TasksStore } from '#/tasks/tasks.store';
+
 export const start = async () => {
 
-    const app = buildApp();
+    const tasksStore = createStore();
+
+    const app = buildApp({ store: tasksStore });
 
     try {
         await app.listen({ port: 3000 });

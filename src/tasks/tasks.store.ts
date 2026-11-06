@@ -1,28 +1,49 @@
-import crypto from 'node:crypto';
-import { createTask, type CreateTaskInput, type Task } from './task.ts';
+import crypto from "node:crypto";
+import { createTask, type CreateTaskInput, type Task } from "./task.ts";
+import type { Static } from "@sinclair/typebox";
 
-const TasksStore = new Map<String, Task>();
+export class TasksStore {
+  #id: string;
+  #store: Map<String, Task>;
 
-export function storeTask(task: CreateTaskInput): Task {
+  constructor() {
+    this.#store = new Map<String, Task>();
+    this.#id = crypto.randomUUID();
+  }
 
+  get id(): string {
+    return this.#id;
+  }
+
+  storeTask(task: CreateTaskInput): Task {
     const remindAt = new Date(task.remindAt).toISOString();
 
     const newTask = createTask({
-        title: task.title,
-        remindAt,
-        ...(task.description ? { description: task.description } : {} )
+      title: task.title,
+      remindAt,
+      ...(task.description ? { description: task.description } : {}),
     });
 
-    TasksStore.set(newTask.id, newTask);
+    this.#store.set(newTask.id, newTask);
 
     return newTask;
 
+  }
+
+  getAllTasks(): Task[] {
+    return Array.from(this.#store.values());
+  }
+
+  getTaskById(taskId: string): Task | undefined {
+    return this.#store.get(taskId);
+  }
+
 }
 
-export function getAllTasks(): Task[] {
-    return Array.from(TasksStore.values());
-}
+const tasksStores = new Map<String, TasksStore>();
 
-export function getTaskById(taskId: string): Task | undefined {
-    return TasksStore.get(taskId);
+export function createStore(): TasksStore {
+    const newTasksStore = new TasksStore();
+    tasksStores.set(newTasksStore.id, newTasksStore);
+    return new TasksStore();
 }
