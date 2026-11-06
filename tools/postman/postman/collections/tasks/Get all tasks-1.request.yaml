@@ -1,0 +1,5 @@
+$kind: http-request
+name: Get all tasks
+url: "{{host}}:{{port}}/tasks"
+method: GET
+order: 3000

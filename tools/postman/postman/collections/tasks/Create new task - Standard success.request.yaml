@@ -1,5 +1,4 @@
 $kind: http-request
-name: POST /tasks
 url: "{{host}}:{{port}}/tasks"
 method: POST
 body:
@@ -10,4 +9,4 @@ body:
         "description": "",
         "remindAt": "2026-11-10T18:00:00.000Z"
     }
-order: 2000
+order: 4000

@@ -1,5 +1,4 @@
 $kind: http-request
-name: GET /task/:taskId
 url: "{{host}}:{{port}}/tasks/:taskId"
 method: GET
 pathVariables:
