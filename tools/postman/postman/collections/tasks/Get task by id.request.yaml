@@ -2,5 +2,7 @@ $kind: http-request
 url: "{{host}}:{{port}}/tasks/:taskId"
 method: GET
 pathVariables:
-  taskId: "123"
+  - key: taskId
+    value: 46ed0dcf-aa2f-4536-9212-b44661b6769c
+    description: ""
 order: 1000
