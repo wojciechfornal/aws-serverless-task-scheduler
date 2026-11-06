@@ -1,0 +1,1 @@
+Project Wiki is located at https://github.com/wojciechfornal/aws-serverless-task-scheduler/wiki
