@@ -2,12 +2,15 @@ import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 import { buildApp } from "#app";
 import { type CreateTaskInput, type Task } from "#/tasks/task";
+import { createStore } from '#/tasks/tasks.store';
 
 const USE_LOGGER = false;
 
 describe("tasks API", () => {
   test("A valid request returns 201, a generated ID, and completed: false", async (t) => {
-    const app = buildApp({ logger: USE_LOGGER });
+
+    const store = createStore();
+    const app = buildApp({ logger: USE_LOGGER, store });
     t.after(() => app.close());
     const task: CreateTaskInput = {
       title: "New task title",
@@ -25,7 +28,8 @@ describe("tasks API", () => {
   });
 
   test("A title containing only whitespace returns 400.", async (t) => {
-    const app = buildApp({ logger: USE_LOGGER });
+    const store = createStore();
+    const app = buildApp({ logger: USE_LOGGER, store });
     t.after(() => app.close());
     const task: CreateTaskInput = {
       title: " ",
@@ -41,7 +45,8 @@ describe("tasks API", () => {
   });
 
   test("An invalid remindAt returns 400.", async (t) => {
-    const app = buildApp({ logger: USE_LOGGER });
+    const store = createStore();
+    const app = buildApp({ logger: USE_LOGGER, store });
     t.after(() => app.close());
     const remindAt = "05/11/2026, 20:55:23";
     const task: CreateTaskInput = {
@@ -58,7 +63,8 @@ describe("tasks API", () => {
   });
 
   test("A valid timestamp in the past returns 400.", async (t) => {
-    const app = buildApp({ logger: USE_LOGGER });
+    const store = createStore();
+    const app = buildApp({ logger: USE_LOGGER, store });
     t.after(() => app.close());
     const remindAt = "1979-01-01T00:00:00.000Z";
     const task: CreateTaskInput = {
@@ -76,7 +82,8 @@ describe("tasks API", () => {
   });
 
   test("A request containing id returns 400, valid field and coe.", async (t) => {
-    const app = buildApp({ logger: USE_LOGGER });
+    const store = createStore();
+    const app = buildApp({ logger: USE_LOGGER, store });
     t.after(() => app.close());
     const task = {
       id: "f502449b-9416-4108-953d-92b9e9947f91",
@@ -95,7 +102,8 @@ describe("tasks API", () => {
   });
 
   test("A request containing completed returns 400, valid field and code.", async (t) => {
-    const app = buildApp({ logger: USE_LOGGER });
+    const store = createStore();
+    const app = buildApp({ logger: USE_LOGGER, store });
     t.after(() => app.close());
     const task = {
       title: "Some title",
@@ -114,7 +122,8 @@ describe("tasks API", () => {
   });
 
   test("A timestamp with an offset is returned in UTC.", async (t) => {
-    const app = buildApp({ logger: USE_LOGGER });
+    const store = createStore();
+    const app = buildApp({ logger: USE_LOGGER, store });
     t.after(() => app.close());
     const future = new Date(Date.now() + 1000 * 60 * 60 * 24 * 2);
     const remindAt = future.toISOString().replace("Z", "+02:00");
@@ -133,7 +142,8 @@ describe("tasks API", () => {
   });
 
   test("Schema failure response body contains valid field and code", async (t) => {
-    const app = buildApp({ logger: USE_LOGGER });
+    const store = createStore();
+    const app = buildApp({ logger: USE_LOGGER, store });
     t.after(() => app.close());
     const task = {
       title: "Some title",
@@ -149,7 +159,8 @@ describe("tasks API", () => {
   });
 
   test("Route validation failure response body contains valid field and code", async (t) => {
-    const app = buildApp({ logger: USE_LOGGER });
+    const store = createStore();
+    const app = buildApp({ logger: USE_LOGGER, store });
     t.after(() => app.close());
     const task = {
       title: " ",
@@ -167,7 +178,8 @@ describe("tasks API", () => {
   });
 
   test("Malformed JSON returns 400 and a subsequent valid request succeeds", async (t) => {
-    const app = buildApp({ logger: USE_LOGGER });
+    const store = createStore();
+    const app = buildApp({ logger: USE_LOGGER, store });
     t.after(() => app.close());
 
     let response = await app.inject({
@@ -205,7 +217,8 @@ describe("tasks API", () => {
 
   test('Added task can be retrieved by id', async (t) => {
 
-    const app = buildApp({ logger: USE_LOGGER });
+    const store = createStore();
+    const app = buildApp({ logger: USE_LOGGER, store });
     t.after(() => app.close());
 
     const task: CreateTaskInput = {
@@ -236,7 +249,8 @@ describe("tasks API", () => {
 
   test('Retrieval of non-existing task returns 404 and TASK_NOT_FOUND code', async (t) => {
 
-    const app = buildApp({ logger: USE_LOGGER });
+    const store = createStore();
+    const app = buildApp({ logger: USE_LOGGER, store });
     t.after(() => app.close());
 
     const response = await app.inject({
@@ -246,6 +260,22 @@ describe("tasks API", () => {
 
     assert.equal(response.statusCode, 404);
     assert.equal(response.json().errors[0].code, 'TASK_NOT_FOUND');
+
+  });
+
+  test('Empty store should return 200 and an empty array', async (t) => {
+
+    const store = createStore();
+    const app = buildApp({ logger: USE_LOGGER, store });
+    t.after(() => app.close());
+
+    const response = await app.inject({
+      method: 'GET',
+      url: '/tasks'
+    });
+
+    assert.equal(response.statusCode, 200);
+    assert.deepEqual(Array.isArray(response.json()), true);
 
   });
 
